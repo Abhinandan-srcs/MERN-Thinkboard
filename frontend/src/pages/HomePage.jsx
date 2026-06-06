@@ -36,7 +36,7 @@ const HomePage = () => {
     (note) =>
       note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       note.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ).sort((a,b) => b.isPinned - a.isPinned);
 
   return (
     <div className="min-h-screen">

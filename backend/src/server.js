@@ -13,12 +13,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // middleware
-if(process.env.NODE_ENV !== "production"){
-    app.use(cors({
-        origin: "http://localhost:5173"
-    }));
-}
-
+app.use(cors({
+  origin: [
+    "http://localhost:5173",        // Vite dev frontend
+    "https://mern-thinkboard-jqnj.onrender.com"  //  production frontend
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(rateLimiter);
 
