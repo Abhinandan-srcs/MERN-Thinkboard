@@ -5,18 +5,27 @@ const noteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  
   content: {
     type: String,
     required: true,
   },
+
   isPinned: {
     type: Boolean,
     default: false,
   },
-  color: {               // 👈 ADD THIS
+
+  color: {               
     type: String,
     default: "#00FF9D",
   },
+  
+  userId:{
+    type:String,
+    required:true
+  },
+
 }, {
   timestamps: true, //createdAt and updatedAT
 });

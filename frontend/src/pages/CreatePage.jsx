@@ -2,9 +2,9 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../lib/axios";
+import { useApiWithAuth } from "../lib/axios";
 
-// 👇 ADD THIS — color options
+// color options
 const COLORS = [
   { label: "Green",  border: "#00FF9D", bg: "rgba(0,255,157,0.07)" },
   { label: "Blue",   border: "#60a5fa", bg: "rgba(96,165,250,0.07)" },
@@ -18,9 +18,12 @@ const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [color, setColor] = useState(COLORS[0]); // 👈 ADD THIS
+  const [color, setColor] = useState(COLORS[0]); 
 
   const navigate = useNavigate();
+  
+  // 👇 Initialize the authenticated API hook
+  const apiWithAuth = useApiWithAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +33,8 @@ const CreatePage = () => {
     }
     setLoading(true);
     try {
-      await api.post("/notes", { title, content, color: color.border }); // 👈 send color
+      // 👇 Use apiWithAuth instead of the default api
+      await apiWithAuth.post("/notes", { title, content, color: color.border }); 
       toast.success("Note created successfully!");
       navigate("/");
     } catch (error) {
@@ -79,7 +83,7 @@ const CreatePage = () => {
                   />
                 </div>
 
-                {/* 👇 COLOR PICKER */}
+                {/* COLOR PICKER */}
                 <div className="form-control mb-6">
                   <label className="label"><span className="label-text">Card Color</span></label>
                   <div className="flex gap-3">

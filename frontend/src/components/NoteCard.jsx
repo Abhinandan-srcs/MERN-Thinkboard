@@ -1,10 +1,12 @@
 import { PenSquareIcon, Trash2Icon, PinIcon } from "lucide-react"; 
 import { Link } from "react-router-dom"; 
 import { formatDate } from "../lib/utils";
-import api from "../lib/axios";
+import { useApiWithAuth } from "../lib/axios"; // 👈 changed: use auth-aware api instead of default
 import toast from "react-hot-toast";
 
 const NoteCard = ({ note, setNotes }) => {
+  // 👇 Get the authenticated API instance with Clerk token attached
+  const api = useApiWithAuth();
 
   const handleDelete = async (e, id) => {
     e.preventDefault();
@@ -31,15 +33,19 @@ const NoteCard = ({ note, setNotes }) => {
     }
   };
 
+  // 👇 stronger opacity in light mode so cards are visible
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  const bgOpacity = isDark ? "18" : "40";
+
   return (
    <Link
       to={`/note/${note._id}`}
       className="card bg-base-100 hover:shadow-lg transition-all duration-200 border-t-4 border-solid h-52 overflow-hidden relative"
       style={{
         borderColor: note.color || "#00FF9D",
-        backgroundColor: note.color ? `${note.color}18` : "transparent",
+        backgroundColor: note.color ? `${note.color}${bgOpacity}` : "transparent",
       }}
->
+    >
       {/* 👇 pin badge — shows when pinned */}
       {note.isPinned && (
         <div className="absolute top-2 right-2 bg-primary/20 rounded-full p-1">

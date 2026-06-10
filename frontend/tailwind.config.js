@@ -10,7 +10,11 @@ export default {
     extend: {},
   },
   plugins: [daisyui],
-  daisyui :{
-    themes:["forest"],
+  daisyui: {
+    themes: [
+      "light",
+      "dark",
+    ],
+    logs: true, // 👈 this will print which themes are loaded in terminal
   }
 }

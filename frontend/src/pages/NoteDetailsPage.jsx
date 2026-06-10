@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import api from "../lib/axios";
+import { useApiWithAuth } from "../lib/axios"; // ✅ already imported
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
 
@@ -21,6 +21,9 @@ const NoteDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // 👇 Get the authenticated API instance with Clerk token attached
+  const api = useApiWithAuth();
+
   useEffect(() => {
     const fetchNote = async () => {
       try {
@@ -34,7 +37,7 @@ const NoteDetailPage = () => {
       }
     };
     fetchNote();
-  }, [id]);
+  }, [id]); // 👈 keep [id] only, not api — prevents infinite refetch
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;

@@ -1,22 +1,26 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import RateLimitedUI from "../components/RateLimitedUI";
-import api from "../lib/axios";
+import { useApiWithAuth } from "../lib/axios";
 import toast from "react-hot-toast";
 import NoteCard from "../components/NoteCard";
 import NotesNotFound from "../components/NotesNotFound";
 
-const HomePage = () => {
+const HomePage = ({theme, toggleTheme}) => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // 👈 ADD
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Custom hook that attaches the Clerk token
+  const apiWithAuth = useApiWithAuth(); 
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await api.get("/notes");
-        setNotes(res.data);
+        const res = await apiWithAuth.get("/notes");
+        // 👇 make sure we only set notes if it's actually an array
+        setNotes(Array.isArray(res.data) ? res.data : []);
         setIsRateLimited(false);
       } catch (error) {
         if (error.response?.status === 429) {
@@ -30,8 +34,7 @@ const HomePage = () => {
     };
     fetchNotes();
   }, []);
-
-  // 👇 ADD
+  
   const filteredNotes = notes.filter(
     (note) =>
       note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -40,15 +43,13 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* 👇 PASS props to Navbar */}
-      <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} theme={theme} toggleTheme={toggleTheme} />
 
       {isRateLimited && <RateLimitedUI />}
 
       <div className="max-w-7xl mx-auto p-4 mt-6">
         {loading && <div className="text-center text-primary py-10">Loading notes...</div>}
 
-        {/* 👇 USE filteredNotes instead of notes */}
         {filteredNotes.length === 0 && !loading && !isRateLimited && <NotesNotFound />}
 
         {filteredNotes.length > 0 && !isRateLimited && (
