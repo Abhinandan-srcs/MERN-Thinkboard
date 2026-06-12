@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 import { setDefaultResultOrder } from "dns";
 import "dotenv/config";
 
-setDefaultResultOrder("ipv4first");
+setDefaultResultOrder("ipv4first"); //It forces DNS resolution to prefer IPv4 addresses first
 
 export const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
-            family: 4
+            family: 4 // USe IPv4
         });
         console.log("MongoDB connected successfully");
     } catch (error) {

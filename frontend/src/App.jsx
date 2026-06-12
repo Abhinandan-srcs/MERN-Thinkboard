@@ -1,60 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';  
-import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";  
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
 import HomePage from "./pages/HomePage";
 import CreatePage from "./pages/CreatePage";
 import NoteDetailsPage from "./pages/NoteDetailsPage";
-import { toast } from 'react-hot-toast';
 
-document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");
+document.documentElement.setAttribute(
+  "data-theme",
+  localStorage.getItem("theme") || "dark"
+);
 
-// 👇 add this — protects any route wrapped with it
 const ProtectedRoute = ({ children }) => {
   const { isSignedIn, isLoaded } = useAuth();
-  if (!isLoaded) return <div className="text-center text-primary py-10">Loading...</div>;
-  if (!isSignedIn) return <Navigate to="/sign-in" />;
+
+  if (!isLoaded) {
+    return (
+      <div className="text-center text-primary py-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return <Navigate to="/sign-in" />;
+  }
+
   return children;
 };
 
 const App = () => {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "dark"
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme(prev => prev === "dark" ? "light" : "dark");
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   return (
-    <div className="relative h-full w-full">
-      <div className={`absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 ${
-        theme === "dark"
-          ? "[background:radial-gradient(125%_125%_at_50%_10%,#000_60%,#00FF9D40_100%)]"
-          : "[background:radial-gradient(125%_125%_at_50%_10%,#ffffff_60%,#00FF9D40_100%)]"
-      }`}/>
-
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Background */}
+  <div
+  className={`absolute inset-0 -z-10 ${
+    theme === "dark"
+      ? "[background:radial-gradient(circle_at_top,#1e293b_0%,#020617_35%,#000000_100%)]"
+      : "bg-white"
+  }`}
+/>
       <Routes>
-        {/* 👇 public routes — anyone can access */}
-        <Route path="/sign-in/*" element={<SignIn routing="path" path="/sign-in" />} />
-        <Route path="/sign-up/*" element={<SignUp routing="path" path="/sign-up" />} />
+        <Route
+          path="/sign-in/*"
+          element={
+            <div className="min-h-screen flex items-center justify-center">
+              <SignIn routing="path" path="/sign-in" />
+            </div>
+          }
+        />
 
-        {/* 👇 protected routes — must be logged in */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <HomePage theme={theme} toggleTheme={toggleTheme} />
-          </ProtectedRoute>
-        }/>
-        <Route path="/create" element={
-          <ProtectedRoute>
-            <CreatePage theme={theme} toggleTheme={toggleTheme} />
-          </ProtectedRoute>
-        }/>
-        <Route path="/note/:id" element={
-          <ProtectedRoute>
-            <NoteDetailsPage theme={theme} toggleTheme={toggleTheme} />
-          </ProtectedRoute>
-        }/>
+        <Route
+          path="/sign-up/*"
+          element={
+            <div className="min-h-screen flex items-center justify-center">
+              <SignUp routing="path" path="/sign-up" />
+            </div>
+          }
+        />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage
+                theme={theme}
+                toggleTheme={toggleTheme}
+              />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/create"
+          element={
+            <ProtectedRoute>
+              <CreatePage
+                theme={theme}
+                toggleTheme={toggleTheme}
+              />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/note/:id"
+          element={
+            <ProtectedRoute>
+              <NoteDetailsPage
+                theme={theme}
+                toggleTheme={toggleTheme}
+              />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );

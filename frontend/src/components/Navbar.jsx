@@ -1,17 +1,32 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { PlusIcon, SearchIcon, SunIcon, MoonIcon, LogInIcon } from 'lucide-react';
+import { PlusIcon, SearchIcon, SunIcon, MoonIcon, LogInIcon, MenuIcon } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
-const Navbar = ({ searchQuery, setSearchQuery, theme, toggleTheme }) => {
+const Navbar = ({ searchQuery, setSearchQuery, theme, toggleTheme, onMenuClick, setActiveView }) => {
   return (
     <header className='bg-base-300 border-b border-base-content/10'>
       <div className='mx-auto max-w-6xl p-4'>
         <div className='flex items-center justify-between gap-4'>
-          <h1 className='text-3xl font-bold text-primary font-mono tracking-tight'>
-            ThinkBoard
-          </h1>
 
+          {/* Left: hamburger + brand */}
+          <div className='flex items-center gap-3'>
+            <button
+              onClick={onMenuClick}
+              className='btn btn-ghost btn-circle'
+              aria-label="Open menu"
+            >
+              <MenuIcon className='size-5' />
+            </button>
+            <span
+              onClick={() => setActiveView("all")}
+              className='text-3xl font-bold text-primary font-mono tracking-tight cursor-pointer'
+            >
+              ThinkBoard
+            </span>
+          </div>
+
+          {/* Center: search */}
           <div className='flex-1 max-w-sm relative'>
             <SearchIcon className='absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/40' />
             <input
@@ -23,27 +38,22 @@ const Navbar = ({ searchQuery, setSearchQuery, theme, toggleTheme }) => {
             />
           </div>
 
+          {/* Right: theme + auth */}
           <div className='flex items-center gap-4'>
-            {/* Theme toggle */}
             <button onClick={toggleTheme} className='btn btn-ghost btn-circle'>
               {theme === "dark" ? <SunIcon className='size-5' /> : <MoonIcon className='size-5' />}
             </button>
 
-            {/* 👇 CLERK AUTH LOGIC STARTS HERE 👇 */}
-            
-            {/* Show these when the user IS logged in */}
             <SignedIn>
               <Link to="/create" className='btn btn-primary'>
                 <PlusIcon className='size-5' />
                 <span className='hidden sm:inline'>New Note</span>
               </Link>
-              
               <div className='ml-2 mt-1'>
                 <UserButton afterSignOutUrl="/" />
               </div>
             </SignedIn>
 
-            {/* Show this when the user is NOT logged in */}
             <SignedOut>
               <SignInButton mode="modal">
                 <button className='btn btn-primary'>
@@ -52,8 +62,8 @@ const Navbar = ({ searchQuery, setSearchQuery, theme, toggleTheme }) => {
                 </button>
               </SignInButton>
             </SignedOut>
-
           </div>
+
         </div>
       </div>
     </header>

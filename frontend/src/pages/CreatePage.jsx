@@ -6,14 +6,13 @@ import { useApiWithAuth } from "../lib/axios";
 
 // color options
 const COLORS = [
-  { label: "Green",  border: "#00FF9D", bg: "rgba(0,255,157,0.07)" },
-  { label: "Blue",   border: "#60a5fa", bg: "rgba(96,165,250,0.07)" },
-  { label: "Purple", border: "#c084fc", bg: "rgba(192,132,252,0.07)" },
-  { label: "Pink",   border: "#f472b6", bg: "rgba(244,114,182,0.07)" },
-  { label: "Amber",  border: "#fbbf24", bg: "rgba(251,191,36,0.07)" },
-  { label: "Red",    border: "#f87171", bg: "rgba(248,113,113,0.07)" },
+  { label: "Emerald", border: "#34D399", bg: "rgba(52,211,153,0.07)" },
+  { label: "Indigo",  border: "#818CF8", bg: "rgba(129,140,248,0.07)" },
+  { label: "Purple",  border: "#C084FC", bg: "rgba(192,132,252,0.07)" },
+  { label: "Rose",    border: "#FB7185", bg: "rgba(251,113,133,0.07)" },
+  { label: "Amber",   border: "#FBBF24", bg: "rgba(251,191,36,0.07)" },
+  { label: "Cyan",    border: "#22D3EE", bg: "rgba(34,211,238,0.07)" },
 ];
-
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");

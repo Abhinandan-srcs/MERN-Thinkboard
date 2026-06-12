@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 import { clerkClient, clerkMiddleware, requireAuth } from "@clerk/express";
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url); //It recreates standard path shortcuts
 const __dirname = path.dirname(__filename);
 
 app.use(cors({
@@ -18,14 +18,14 @@ app.use(cors({
     "https://mern-thinkboard-jqnj.onrender.com"  
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization']     
 }));
 
-app.options('*', cors());
-app.use(express.json());
+app.options('*', cors()); 
+app.use(express.json()); 
 
-// 👇 Manual JWT verification middleware
+// Manual JWT verification middleware through clerk
 app.use(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -65,6 +65,6 @@ if(process.env.NODE_ENV === "production"){
 
 connectDB().then(() => {
     app.listen(process.env.PORT, () => {
-        console.log(`Server started on port ${process.env.PORT}`);
+        console.log(`Server started on port: ${process.env.PORT}`);
     });
 });
