@@ -49,7 +49,7 @@ const HomePage = ({ theme, toggleTheme }) => {
     fetchNotes();
   }, []);
 
-  // ── Archive toggle ───────────────────────────────────────────────────────────
+  //  Archive toggle ───────────────────────────────────────────────────────────
   const handleArchive = async (noteId) => {
     try {
       const res = await apiWithAuth.patch(`/notes/${noteId}/archive`);
@@ -60,21 +60,21 @@ const HomePage = ({ theme, toggleTheme }) => {
     }
   };
 
-  // ── Trash toggle ─────────────────────────────────────────────────────────────
+  //  Trash toggle ─────────────────────────────────────────────────────────────
   const handleTrash = async (noteId) => {
     try {
       const res = await apiWithAuth.patch(`/notes/${noteId}/trash`);
       setNotes((prev) => prev.map((n) => (n._id === noteId ? res.data : n)));
       toast.success(res.data.isTrashed ? "Moved to trash" : "Restored");
     } catch {
-      // optimistic fallback
+      // optimistic fallback - even if backend fails user sees UI
       setNotes((prev) =>
         prev.map((n) => (n._id === noteId ? { ...n, isTrashed: !n.isTrashed } : n))
       );
     }
   };
 
-  // ── Filter notes for the active view ────────────────────────────────────────
+  //  Filter notes for the active view ────────────────────────────────────────
   const getVisibleNotes = () => {
     let base;
     if (activeView === "all")

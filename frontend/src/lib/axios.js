@@ -7,7 +7,7 @@ const api = axios.create({
     baseURL: BASE_URL,
 });
 
-//  hook — attaches token to every request
+// custom hook - attaches token to every request
 export const useApiWithAuth = () => {
   const { getToken } = useAuth();
 

@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], label
         }`}
         style={{ boxShadow: isOpen ? "4px 0 32px rgba(0,0,0,0.35)" : "none" }}
       >
-        {/* Header — close button only */}
+        {/* Header - close button only */}
         <div className="flex items-center justify-end px-3 py-3 border-b border-base-content/10 min-h-[61px]">
           <button
             onClick={onClose}
