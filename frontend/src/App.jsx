@@ -104,7 +104,7 @@ const App = () => {
                 toggleTheme={toggleTheme}
               />
             </ProtectedRoute>
-          }
+          } 
         />
       </Routes>
     </div>

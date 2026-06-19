@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import RateLimitedUI from "../components/RateLimitedUI";
-import { useApiWithAuth } from "../lib/axios";
+import { useApiWithAuth } from "../lib/axios"; //custom Hook
 import toast from "react-hot-toast";
 import NoteCard from "../components/NoteCard";
 import NotesNotFound from "../components/NotesNotFound";
@@ -37,8 +37,8 @@ const HomePage = ({ theme, toggleTheme }) => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await apiWithAuth.get("/notes");
-        setNotes(Array.isArray(res.data) ? res.data : []);
+        const res = await apiWithAuth.get("/notes"); 
+        setNotes(Array.isArray(res.data) ? res.data : []); //safety check
       } catch (error) {
         if (error.response?.status === 429) setIsRateLimited(true);
         else toast.error("Failed to load notes");
@@ -69,7 +69,7 @@ const HomePage = ({ theme, toggleTheme }) => {
     } catch {
       // optimistic fallback - even if backend fails user sees UI
       setNotes((prev) =>
-        prev.map((n) => (n._id === noteId ? { ...n, isTrashed: !n.isTrashed } : n))
+        prev.map((n) => (n._id === noteId ? { ...n, isTrashed: !n.isTrashed } : n)) //loop through privious notes and update the updated note
       );
     }
   };
@@ -101,8 +101,8 @@ const HomePage = ({ theme, toggleTheme }) => {
   };
 
   const visibleNotes = getVisibleNotes();
-
-  const meta = activeView.startsWith("label:")
+ 
+  const meta = activeView.startsWith("label:") //This sayys show only the notes which i have clicked from all (like pinned/archive/trash)
     ? { icon: TagIcon, label: activeView.slice(6) }
     : VIEW_META[activeView] || VIEW_META.all;
 
@@ -127,6 +127,7 @@ const HomePage = ({ theme, toggleTheme }) => {
         notes={notes}
         labels={labels}
         setLabels={setLabels}
+        setNotes={setNotes}
       />
 
       {isRateLimited && <RateLimitedUI />}

@@ -1,4 +1,3 @@
-
 import {
   NotebookIcon,
   PinIcon,
@@ -8,6 +7,8 @@ import {
   XIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useApiWithAuth } from "../lib/axios";
+import toast from "react-hot-toast";
 
 const LABEL_COLORS = [
   "#00FF9D",
@@ -18,7 +19,8 @@ const LABEL_COLORS = [
   "#f87171",
 ];
 
-const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], labels, setLabels }) => {
+const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], labels, setLabels, setNotes }) => {
+  const api = useApiWithAuth();
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [newLabelName, setNewLabelName] = useState("");
   const [newLabelColor, setNewLabelColor] = useState(LABEL_COLORS[0]);
@@ -38,8 +40,26 @@ const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], label
     setShowLabelInput(false);
   };
 
-  const removeLabel = (id) => {
+  const removeLabel = async (id) => {
+    // Find the label being removed
+    const labelToRemove = labels.find((l) => l.id === id);
+    if (!labelToRemove) return;
+
+    // Remove label from the labels list
     setLabels((prev) => prev.filter((l) => l.id !== id));
+
+    // Clean up all notes that still have this label assigned
+    const affectedNotes = notes.filter((n) => n.labels?.includes(labelToRemove.name));
+
+    for (const note of affectedNotes) {
+      const updatedLabels = note.labels.filter((l) => l !== labelToRemove.name);
+      try {
+        const res = await api.patch(`/notes/${note._id}/labels`, { labels: updatedLabels });
+        setNotes((prev) => prev.map((n) => (n._id === note._id ? res.data : n)));
+      } catch {
+        toast.error(`Failed to clean label from note: ${note.title}`);
+      }
+    }
   };
 
   const navItems = [
@@ -80,7 +100,7 @@ const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], label
   return (
     <>
       {/* Backdrop */}
-      <div
+      <div 
         className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-200 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
@@ -88,7 +108,7 @@ const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], label
       />
 
       {/* Panel */}
-      <aside
+      <aside // On click closes sidebar
         className={`fixed top-0 left-0 z-50 h-full w-56 flex flex-col bg-base-200 border-r border-base-content/10 transition-transform duration-200 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
@@ -210,4 +230,3 @@ const Sidebar = ({ isOpen, onClose, activeView, setActiveView, notes = [], label
 };
 
 export default Sidebar;
-

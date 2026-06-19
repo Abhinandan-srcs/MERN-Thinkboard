@@ -1,5 +1,5 @@
 import { StrictMode } from 'react' //Helps finding bugs
-import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client' //This creates the React root.
 import './index.css'
 import App from './App.jsx'
 import {BrowserRouter} from "react-router"
